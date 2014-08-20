@@ -3,12 +3,9 @@ import tkMessageBox
 import time
 import thread
 
-def callback(event):
-    movecircle(C, circ1)
-    movecircle(C, circ2)
 
 class set_up(object):
-           
+   
 
     def create_pong(self):
         top = Tkinter.Tk()

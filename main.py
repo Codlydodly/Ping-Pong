@@ -9,8 +9,14 @@ class set_up(object):
 
     def create_pong(self):
         top = Tkinter.Tk()
-
         C = Tkinter.Canvas(top, bg="black", height= 350, width=600)
+
+        
+        top.after(0, self.run, C)
+        top.mainloop()
+
+    def run(self, C):
+        
        
         self.net = self.paddle_and_net(C, 295, 360, 305, 0, "white")
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
@@ -22,7 +28,8 @@ class set_up(object):
         # self.move_ball(C)
         self.handle_keyboard(C)
         C.focus_set()
-        top.mainloop()   
+        top.after(0, self.run, C)
+
 
     def move_up(self, Canvas, event):        
         Canvas.move(self.paddle_2, 0, -5)

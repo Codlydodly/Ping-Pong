@@ -5,19 +5,15 @@ import thread
 
 
 class set_up(object):
-   
+
 
     def create_pong(self):
         top = Tkinter.Tk()
-        C = Tkinter.Canvas(top, bg="black", height= 350, width=600)
-
-        
+        C = Tkinter.Canvas(top, bg="black", height= 350, width=600)        
         top.after(0, self.run, C)
         top.mainloop()
 
-    def run(self, C):
-        
-       
+    def run(self, C):      
         self.net = self.paddle_and_net(C, 295, 360, 305, 0, "white")
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
         self.paddle_2 = self.paddle_and_net(C, 585, 250, 595, 345, "white")
@@ -28,7 +24,7 @@ class set_up(object):
         # self.move_ball(C)
         self.handle_keyboard(C)
         C.focus_set()
-        top.after(0, self.run, C)
+        # top.after(0, self.run, C)
 
 
     def move_up(self, Canvas, event):        
@@ -79,18 +75,18 @@ class set_up(object):
             time.sleep(0.001)
 
     def check_collision(self, Canvas, position):
-        if (position[0] == 0) or (position[0] == 600):
+        if (position[0] == Canvas.coords(self.paddle_1)[2]):
             return False
-
+        elif (position[2] == Canvas.coords(self.paddle_2)[0]):
+            return False
+        elif (position[0] == 0) or (position[0] == 600):
+            return False
         elif ((position[1] ==0) or (position[1] == 350)):
             return True
-
         elif ((position[2] == 0) or (position[2] == 600)):
             return False
-
         elif ((position[3] ==0) or (position[3] == 350)):
             return True
-
         else:
             return 
 

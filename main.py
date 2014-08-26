@@ -81,10 +81,12 @@ class set_up(object):
             return False
         elif (position[0] == 0) or (position[0] == 600):
             return False
+            # If this happens the ball should be reset and a point given
         elif ((position[1] ==0) or (position[1] == 350)):
             return True
         elif ((position[2] == 0) or (position[2] == 600)):
             return False
+            # If this happens the ball should be reset and a point given
         elif ((position[3] ==0) or (position[3] == 350)):
             return True
         else:

@@ -6,8 +6,10 @@ import thread
 
 class set_up(object):
 
+    
 
-    def create_pong(self):
+
+    def create_pong(self): 
         top = Tkinter.Tk()
         C = Tkinter.Canvas(top, bg="black", height= 350, width=600)        
         top.after(0, self.run, C)
@@ -17,7 +19,10 @@ class set_up(object):
         self.net = self.paddle_and_net(C, 295, 360, 305, 0, "white")
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
         self.paddle_2 = self.paddle_and_net(C, 585, 250, 595, 345, "white")
-        self.ball_1 = self.ball(C)        
+        self.ball = self.ball(C)
+        self.x = 5
+        self.y = 5
+            
 
         C.pack()
         thread.start_new_thread ( self.move_ball, (C,))
@@ -63,36 +68,35 @@ class set_up(object):
         return Canvas.create_oval(90, 90, 110, 110, width="0", fill="green")
 
     def move_ball(self, Canvas):
-        x = 5
-        y = 5
-        while True:
-            if (self.check_collision(Canvas, Canvas.coords(self.ball_1)) == False):
-                x = -x
-            elif (self.check_collision(Canvas, Canvas.coords(self.ball_1)) == True):
-                y = -y            
+        # print self.x     
+        
+        if (self.check_collision(Canvas, Canvas.coords(self.ball)) == False):
+            self.x = -self.x
+        elif (self.check_collision(Canvas, Canvas.coords(self.ball)) == True):
+            self.y = -self.y            
 
-            Canvas.move(self.ball_1, x, y)
-            time.sleep(0.001)
+        Canvas.move(self.ball, self.x, self.y)
+        Canvas.after(100, self.move_ball, (Canvas))
+
 
     def check_collision(self, Canvas, position):
-        if (position[0] == Canvas.coords(self.paddle_1)[2]):
-            return False
-        elif (position[2] == Canvas.coords(self.paddle_2)[0]):
-            return False
-        elif (position[0] == 0) or (position[0] == 600):
+        radius = 10
+        # if (position[0] == Canvas.coords(self.paddle_1)[2]):
+        #     return False
+        # elif (position[2] == Canvas.coords(self.paddle_2)[0]):
+        #     return False
+        if (position[0] < 0 + radius): 
             return False
             # If this happens the ball should be reset and a point given
-        elif ((position[1] ==0) or (position[1] == 350)):
+        elif (position[1] < 0 + radius):
             return True
-        elif ((position[2] == 0) or (position[2] == 600)):
+        elif (position[2] > 600):
             return False
             # If this happens the ball should be reset and a point given
-        elif ((position[3] ==0) or (position[3] == 350)):
+        elif (position[3] > 350):
             return True
         else:
-            return 
-
-
+            return
 
 pp = set_up()
 pp.create_pong()

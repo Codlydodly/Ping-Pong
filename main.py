@@ -4,15 +4,13 @@ import time
 import thread
 
 
+
 class set_up(object):
-
-    
-
 
     def create_pong(self): 
         top = Tkinter.Tk()
         C = Tkinter.Canvas(top, bg="black", height= 350, width=600)        
-        top.after(0, self.run, C)
+        top.after(0, self.run, C)        
         top.mainloop()
 
     def run(self, C):      
@@ -22,44 +20,53 @@ class set_up(object):
         self.ball = self.ball(C)
         self.x = 5
         self.y = 5
-            
-
+        self.pressedKeys=set()
         C.pack()
         thread.start_new_thread ( self.move_ball, (C,))
-        # self.move_ball(C)
         self.handle_keyboard(C)
-        C.focus_set()
-        # top.after(0, self.run, C)
+        C.focus_set()   
 
-
-    def move_up(self, Canvas, event):        
+    def move_up(self, Canvas):  
         Canvas.move(self.paddle_2, 0, -5)
     
-    def move_down(self, Canvas, event):        
+    def move_down(self, Canvas):
         Canvas.move(self.paddle_2, 0, 5)
 
-    def move_w(self, Canvas, event):        
+    def move_w(self, Canvas):
         Canvas.move(self.paddle_1, 0, -5)
     
-    def move_s(self, Canvas, event):        
+    def move_s(self, Canvas):        
         Canvas.move(self.paddle_1, 0, 5)
 
+    def move_paddles(self, Canvas):
+        if 'w' in self.pressedKeys:
+            self.move_w(Canvas)
+        if 's' in self.pressedKeys:
+            self.move_s(Canvas)
+        if 'Up' in self.pressedKeys:
+            self.move_up(Canvas)
+        if 'Down' in self.pressedKeys:
+            self.move_down(Canvas)
+        Canvas.after(10, self.move_paddles, (Canvas))    
+
+    def onKeyPress(self, event):
+        self.pressedKeys.add(event.keysym)
+
+    def onKeyRelease(self, event):
+        self.pressedKeys.remove(event.keysym)
 
     def handle_keyboard(self, Canvas):
-
-        move_up = lambda event : self.move_up(Canvas, event)
-        Canvas.bind("<Up>", move_up)
-
-        move_down = lambda event : self.move_down(Canvas, event)
-        Canvas.bind("<Down>", move_down)
-
-
-        move_w = lambda event : self.move_w(Canvas, event)
-        Canvas.bind("w", move_w)
-
-        move_s = lambda event : self.move_s(Canvas, event)
-        Canvas.bind("s", move_s)
-    
+        Canvas.bind("<Key>", self.onKeyPress)
+        Canvas.bind("<KeyRelease>", self.onKeyRelease)
+        self.move_paddles(Canvas)
+        # move_up = lambda event : self.move_up(Canvas, event)
+        # Canvas.bind("<Key-Up>", move_up)
+        # move_down = lambda event : self.move_down(Canvas, event)
+        # Canvas.bind("<Key-Down>", move_down)
+        # move_w = lambda event : self.move_w(Canvas, event)
+        # Canvas.bind("<KeyRelease-w>", move_w)
+        # move_s = lambda event : self.move_s(Canvas, event)
+        # Canvas.bind("<KeyRelease-s>", move_s)       
 
     def paddle_and_net(self, Canvas, x1, y1, x2, y2, fill):
         return Canvas.create_rectangle(x1, y1, x2, y2, fill=fill)
@@ -68,16 +75,12 @@ class set_up(object):
         return Canvas.create_oval(90, 90, 110, 110, width="0", fill="green")
 
     def move_ball(self, Canvas):
-        # print self.x     
-        
         if (self.check_collision(Canvas, Canvas.coords(self.ball)) == False):
             self.x = -self.x
         elif (self.check_collision(Canvas, Canvas.coords(self.ball)) == True):
-            self.y = -self.y            
-
+            self.y = -self.y
         Canvas.move(self.ball, self.x, self.y)
-        Canvas.after(100, self.move_ball, (Canvas))
-
+        Canvas.after(10, self.move_ball, (Canvas))
 
     def check_collision(self, Canvas, position):
         radius = 10

@@ -3,14 +3,12 @@ import tkMessageBox
 import time
 import thread
 
-
-
 class set_up(object):
 
     def create_pong(self): 
         top = Tkinter.Tk()
         C = Tkinter.Canvas(top, bg="black", height= 350, width=600)        
-        top.after(0, self.run, C)        
+        top.after(0, self.run, C)    
         top.mainloop()
 
     def run(self, C):      
@@ -18,6 +16,12 @@ class set_up(object):
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
         self.paddle_2 = self.paddle_and_net(C, 585, 250, 595, 345, "white")
         self.ball = self.ball(C)
+        self.leftscore = 0
+        self.rightscore = 0       
+        self.score = self.score_board(C, 280)
+        self.score2 = self.score_board(C, 320)
+        # C.create_text(280,20, fill="white", font=("TkDefaultFont", 25), text=self.leftscore)
+        # self.score2 = C.create_text(320,20, fill="white", font=("TkDefaultFont", 25), text=self.rightscore)
         self.x = 5
         self.y = 5
         self.pressedKeys=set()
@@ -26,17 +30,21 @@ class set_up(object):
         self.handle_keyboard(C)
         C.focus_set()   
 
-    def move_up(self, Canvas):  
-        Canvas.move(self.paddle_2, 0, -5)
+    def move_up(self, Canvas):
+        if Canvas.coords(self.paddle_2)[1] > 0: 
+            Canvas.move(self.paddle_2, 0, -5)
     
-    def move_down(self, Canvas):
-        Canvas.move(self.paddle_2, 0, 5)
+    def move_down(self, Canvas):        
+        if Canvas.coords(self.paddle_2)[3] < 350: 
+            Canvas.move(self.paddle_2, 0, 5)
 
     def move_w(self, Canvas):
-        Canvas.move(self.paddle_1, 0, -5)
+        if Canvas.coords(self.paddle_1)[1] > 0:        
+            Canvas.move(self.paddle_1, 0, -5)
     
-    def move_s(self, Canvas):        
-        Canvas.move(self.paddle_1, 0, 5)
+    def move_s(self, Canvas):
+        if Canvas.coords(self.paddle_1)[3] < 350:
+            Canvas.move(self.paddle_1, 0, 5)
 
     def move_paddles(self, Canvas):
         if 'w' in self.pressedKeys:
@@ -58,13 +66,20 @@ class set_up(object):
     def handle_keyboard(self, Canvas):
         Canvas.bind("<Key>", self.onKeyPress)
         Canvas.bind("<KeyRelease>", self.onKeyRelease)
-        self.move_paddles(Canvas)  
+        self.move_paddles(Canvas)
+
+    def score_board(self, Canvas, xcoord):
+        return Canvas.create_text(xcoord,20, fill="white", font=("TkDefaultFont", 25), text=self.leftscore)
 
     def paddle_and_net(self, Canvas, x1, y1, x2, y2, fill):
         return Canvas.create_rectangle(x1, y1, x2, y2, fill=fill)
 
     def ball(self,Canvas):
         return Canvas.create_oval(90, 90, 110, 110, width="0", fill="green")
+
+    def change_score(self, Canvas):
+            Canvas.itemconfig(self.score, text=self.leftscore)
+            Canvas.itemconfig(self.score2, text=self.rightscore)
 
     def move_ball(self, Canvas):
         if (self.check_collision(Canvas, Canvas.coords(self.ball)) == False):
@@ -74,20 +89,30 @@ class set_up(object):
         Canvas.move(self.ball, self.x, self.y)
         Canvas.after(10, self.move_ball, (Canvas))
 
+    def reset_ball(self, Canvas):
+        Canvas.coords(self.ball, 290, 165, 310, 185)
+        time.sleep(2)
+
     def check_collision(self, Canvas, position):
         radius = 10
         if (position[0] == Canvas.coords(self.paddle_1)[2]) and (position[1] > Canvas.coords(self.paddle_1)[1]) and (position[1] < Canvas.coords(self.paddle_1)[3]):
             return False
         elif (position[2] == Canvas.coords(self.paddle_2)[0]) and (position[1] > Canvas.coords(self.paddle_2)[1]) and (position[1] < Canvas.coords(self.paddle_2)[3]):
             return False
-        elif (position[0] < 0 + radius): 
-            return False
-            # If this happens the ball should be reset and a point given
+        elif (position[0] < 0 + radius):
+            self.rightscore += 1
+            self.change_score(Canvas)
+            print self.rightscore
+            self.reset_ball(Canvas)
+            return False            
         elif (position[1] < 0 + radius):
             return True
         elif (position[2] > 600):
-            return False
-            # If this happens the ball should be reset and a point given
+            self.leftscore += 1
+            print self.leftscore
+            self.change_score(Canvas)
+            self.reset_ball(Canvas)
+            return False            
         elif (position[3] > 350):
             return True
         else:

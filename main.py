@@ -58,15 +58,7 @@ class set_up(object):
     def handle_keyboard(self, Canvas):
         Canvas.bind("<Key>", self.onKeyPress)
         Canvas.bind("<KeyRelease>", self.onKeyRelease)
-        self.move_paddles(Canvas)
-        # move_up = lambda event : self.move_up(Canvas, event)
-        # Canvas.bind("<Key-Up>", move_up)
-        # move_down = lambda event : self.move_down(Canvas, event)
-        # Canvas.bind("<Key-Down>", move_down)
-        # move_w = lambda event : self.move_w(Canvas, event)
-        # Canvas.bind("<KeyRelease-w>", move_w)
-        # move_s = lambda event : self.move_s(Canvas, event)
-        # Canvas.bind("<KeyRelease-s>", move_s)       
+        self.move_paddles(Canvas)  
 
     def paddle_and_net(self, Canvas, x1, y1, x2, y2, fill):
         return Canvas.create_rectangle(x1, y1, x2, y2, fill=fill)

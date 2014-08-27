@@ -80,6 +80,16 @@ class set_up(object):
     def change_score(self, Canvas):
             Canvas.itemconfig(self.score, text=self.leftscore)
             Canvas.itemconfig(self.score2, text=self.rightscore)
+            if self.leftscore == 11:
+                self.left_win(Canvas)
+            elif self.rightscore == 11:
+                self.right_win(Canvas)
+
+    def right_win(self, Canvas):
+        print 'RIGHT WINNER'
+
+    def left_win(self, Canvas):
+        print 'LEFT WINNER'
 
     def move_ball(self, Canvas):
         if (self.check_collision(Canvas, Canvas.coords(self.ball)) == False):
@@ -87,7 +97,8 @@ class set_up(object):
         elif (self.check_collision(Canvas, Canvas.coords(self.ball)) == True):
             self.y = -self.y
         Canvas.move(self.ball, self.x, self.y)
-        Canvas.after(10, self.move_ball, (Canvas))
+        if (self.rightscore < 11) and (self.leftscore < 11):
+            Canvas.after(10, self.move_ball, (Canvas))
 
     def reset_ball(self, Canvas):
         Canvas.coords(self.ball, 290, 165, 310, 185)

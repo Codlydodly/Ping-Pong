@@ -81,11 +81,11 @@ class set_up(object):
 
     def check_collision(self, Canvas, position):
         radius = 10
-        # if (position[0] == Canvas.coords(self.paddle_1)[2]):
-        #     return False
-        # elif (position[2] == Canvas.coords(self.paddle_2)[0]):
-        #     return False
-        if (position[0] < 0 + radius): 
+        if (position[0] == Canvas.coords(self.paddle_1)[2]) and (position[1] > Canvas.coords(self.paddle_1)[1]) and (position[1] < Canvas.coords(self.paddle_1)[3]):
+            return False
+        elif (position[2] == Canvas.coords(self.paddle_2)[0]) and (position[1] > Canvas.coords(self.paddle_2)[1]) and (position[1] < Canvas.coords(self.paddle_2)[3]):
+            return False
+        elif (position[0] < 0 + radius): 
             return False
             # If this happens the ball should be reset and a point given
         elif (position[1] < 0 + radius):

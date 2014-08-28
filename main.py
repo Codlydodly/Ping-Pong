@@ -13,29 +13,34 @@ class set_up(object):
         top.mainloop()
 
     def run(self, C, top):
-        self.quit_button = Tkinter.Button(top, text="Quit", command=C.quit)
-        self.replay_button = Tkinter.Button(top, text="Replay", command=self.reset_score(C))
+        self.quit_button = Tkinter.Button(top, text="Quit", highlightbackground="black", command=C.quit)
+        self.replay_button = Tkinter.Button(top, text="Replay", highlightbackground="black", command=   lambda: self.reset_score(C, top))
         self.net = self.paddle_and_net(C, 295, 360, 305, 0, "white")
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
         self.paddle_2 = self.paddle_and_net(C, 585, 250, 595, 345, "white")
         self.ball = self.ball(C)
-        # self.button = Tkinter.Button(C, height=115, width=300, text="QUIT", command=C.quit)
         self.leftscore = 0
         self.rightscore = 0       
         self.score = self.score_board(C, 280, 20, 25, 0)
         self.score2 = self.score_board(C, 320, 20, 25, 0)
         self.x = 5
-        self.y = 5
+        self.y = 5        
         self.pressedKeys=set()
         C.pack()
         thread.start_new_thread ( self.move_ball, (C,))
         self.handle_keyboard(C)
         C.focus_set()
 
-    def reset_score(self, Canvas):
+    def reset_score(self, C, top):
+        C.delete(self.quit_button_window)
+        C.delete(self.replay_button_window)
+        C.delete(self.win)
+        C.delete(self.lose)
         self.leftscore = 0
         self.rightscore = 0
-        self.reset_ball(Canvas) 
+        self.change_score(C)
+
+            
 
     def move_up(self, Canvas):
         if Canvas.coords(self.paddle_2)[1] > 0: 
@@ -87,22 +92,23 @@ class set_up(object):
     def change_score(self, Canvas):
             Canvas.itemconfig(self.score, text=self.leftscore)
             Canvas.itemconfig(self.score2, text=self.rightscore)
-            if self.leftscore == 11:
+            if self.leftscore == 1:
                 self.left_win(Canvas)
             elif self.rightscore == 1:
                 self.right_win(Canvas)
 
     def right_win(self, Canvas):
-        self.score_board(Canvas, 150, 150, 50,"YOU LOSE")
-        self.score_board(Canvas, 450, 150, 50,"YOU WIN")
+        self.lose = self.score_board(Canvas, 150, 150, 50,"YOU LOSE")
+        self.win = self.score_board(Canvas, 450, 150, 50,"YOU WIN")
         self.quit_button_window = Canvas.create_window(350, 235, window=self.quit_button)
         self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)
-        # self.button.pack()
-        # (Canvas, text="Play Again", height=115, width=300)
+       
 
     def left_win(self, Canvas):
-        self.score_board(Canvas, 450, 150, 50,"YOU LOSE")
-        self.score_board(Canvas, 150, 150, 50,"YOU WIN")
+        self.lose = self.score_board(Canvas, 450, 150, 50,"YOU LOSE")
+        self.win = self.score_board(Canvas, 150, 150, 50,"YOU WIN")
+        self.quit_button_window = Canvas.create_window(350, 235, window=self.quit_button)
+        self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)
 
     def move_ball(self, Canvas):
         if (self.check_collision(Canvas, Canvas.coords(self.ball)) == False):
@@ -110,7 +116,7 @@ class set_up(object):
         elif (self.check_collision(Canvas, Canvas.coords(self.ball)) == True):
             self.y = -self.y
         Canvas.move(self.ball, self.x, self.y)
-        if (self.rightscore < 1) and (self.leftscore < 11):
+        if (self.rightscore < 1) and (self.leftscore < 1):
             Canvas.after(10, self.move_ball, (Canvas))
 
     def reset_ball(self, Canvas):

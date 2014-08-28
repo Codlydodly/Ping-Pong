@@ -89,7 +89,7 @@ class set_up(object):
             Canvas.itemconfig(self.score2, text=self.rightscore)
             if self.leftscore == 11:
                 self.left_win(Canvas)
-            elif self.rightscore == 1:
+            elif self.rightscore == 11:
                 self.right_win(Canvas)
 
     def right_win(self, Canvas):
@@ -110,7 +110,7 @@ class set_up(object):
         elif (self.check_collision(Canvas, Canvas.coords(self.ball)) == True):
             self.y = -self.y
         Canvas.move(self.ball, self.x, self.y)
-        if (self.rightscore < 1) and (self.leftscore < 11):
+        if (self.rightscore < 11) and (self.leftscore < 11):
             Canvas.after(10, self.move_ball, (Canvas))
 
     def reset_ball(self, Canvas):

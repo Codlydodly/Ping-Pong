@@ -2,6 +2,7 @@ import Tkinter
 import tkMessageBox
 import time
 import thread
+import math
 
 class set_up(object):
 
@@ -13,29 +14,34 @@ class set_up(object):
         top.mainloop()
 
     def run(self, C, top):
-        self.quit_button = Tkinter.Button(top, text="Quit", command=C.quit)
-        self.replay_button = Tkinter.Button(top, text="Replay", command=self.reset_score(C))
+        self.quit_button = Tkinter.Button(top, text="Quit", highlightbackground="black", command=C.quit)
+        self.replay_button = Tkinter.Button(top, text="Replay", highlightbackground="black", command = lambda: self.reset_score(C))
         self.net = self.paddle_and_net(C, 295, 360, 305, 0, "white")
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
         self.paddle_2 = self.paddle_and_net(C, 585, 250, 595, 345, "white")
         self.ball = self.ball(C)
-        # self.button = Tkinter.Button(C, height=115, width=300, text="QUIT", command=C.quit)
         self.leftscore = 0
         self.rightscore = 0       
         self.score = self.score_board(C, 280, 20, 25, 0)
         self.score2 = self.score_board(C, 320, 20, 25, 0)
         self.x = 5
-        self.y = 5
+        self.y = 5        
         self.pressedKeys=set()
         C.pack()
         thread.start_new_thread ( self.move_ball, (C,))
         self.handle_keyboard(C)
         C.focus_set()
 
-    def reset_score(self, Canvas):
+    def reset_score(self, C):
+        C.delete(self.quit_button_window)
+        C.delete(self.replay_button_window)
+        C.delete(self.win)
+        C.delete(self.lose)
         self.leftscore = 0
         self.rightscore = 0
-        self.reset_ball(Canvas) 
+        self.change_score(C)
+        self.reset_ball(C)
+        self.move_ball(C)       
 
     def move_up(self, Canvas):
         if Canvas.coords(self.paddle_2)[1] > 0: 
@@ -93,22 +99,22 @@ class set_up(object):
                 self.right_win(Canvas)
 
     def right_win(self, Canvas):
-        self.score_board(Canvas, 150, 150, 50,"YOU LOSE")
-        self.score_board(Canvas, 450, 150, 50,"YOU WIN")
+        self.lose = self.score_board(Canvas, 150, 150, 50,"YOU LOSE")
+        self.win = self.score_board(Canvas, 450, 150, 50,"YOU WIN")
         self.quit_button_window = Canvas.create_window(350, 235, window=self.quit_button)
-        self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)
-        # self.button.pack()
-        # (Canvas, text="Play Again", height=115, width=300)
+        self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)       
 
     def left_win(self, Canvas):
-        self.score_board(Canvas, 450, 150, 50,"YOU LOSE")
-        self.score_board(Canvas, 150, 150, 50,"YOU WIN")
+        self.lose = self.score_board(Canvas, 450, 150, 50,"YOU LOSE")
+        self.win = self.score_board(Canvas, 150, 150, 50,"YOU WIN")
+        self.quit_button_window = Canvas.create_window(350, 235, window=self.quit_button)
+        self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)
 
     def move_ball(self, Canvas):
-        if (self.check_collision(Canvas, Canvas.coords(self.ball)) == False):
+        if (self.better_collision_check(Canvas) == False):
             self.x = -self.x
         elif (self.check_collision(Canvas, Canvas.coords(self.ball)) == True):
-            self.y = -self.y
+            self.y = -self.y       
         Canvas.move(self.ball, self.x, self.y)
         if (self.rightscore < 11) and (self.leftscore < 11):
             Canvas.after(10, self.move_ball, (Canvas))
@@ -119,26 +125,42 @@ class set_up(object):
 
     def check_collision(self, Canvas, position):
         radius = 10
-        if (position[0] == Canvas.coords(self.paddle_1)[2]) and (position[1] > Canvas.coords(self.paddle_1)[1]) and (position[1] < Canvas.coords(self.paddle_1)[3]):
-            return False
-        elif (position[2] == Canvas.coords(self.paddle_2)[0]) and (position[1] > Canvas.coords(self.paddle_2)[1]) and (position[1] < Canvas.coords(self.paddle_2)[3]):
-            return False
-        elif (position[0] < 0 + radius):
+        # if (position[0] == Canvas.coords(self.paddle_1)[2]) and (position[1] > Canvas.coords(self.paddle_1)[1]) and (position[1] < Canvas.coords(self.paddle_1)[3]):
+        #     return False
+        # elif (position[2] == Canvas.coords(self.paddle_2)[0]) and (position[1] > Canvas.coords(self.paddle_2)[1]) and (position[1] < Canvas.coords(self.paddle_2)[3]):
+        #     return False
+        if (position[0] < 0 + radius):
             self.rightscore += 1
             self.change_score(Canvas)
-            self.reset_ball(Canvas)
-            return False            
+            self.reset_ball(Canvas)           
         elif (position[1] < 0 + radius):
             return True
         elif (position[2] > 600):
             self.leftscore += 1
             self.change_score(Canvas)
-            self.reset_ball(Canvas)
-            return False            
+            self.reset_ball(Canvas)           
         elif (position[3] > 350):
             return True
         else:
             return
+
+    def better_collision_check(self, Canvas):
+        i = 0
+        while i < math.pi*2:
+            print i
+            centerx = Canvas.coords(self.ball)[0] + 10
+            centery = Canvas.coords(self.ball)[1] + 10          
+            xcoord = centerx + 10 * math.cos(i)
+            ycoord = centery + 10 * math.sin(i) 
+            i += math.pi*(0.05)
+            if xcoord == Canvas.coords(self.paddle_1)[2] and Canvas.coords(self.ball)[1] > Canvas.coords(self.paddle_1)[1] and Canvas.coords(self.ball)[1] < Canvas.coords(self.paddle_1)[3]:
+                print 'THESE ARE NOT THE DROIDS YOU ARE LOOKING FOR'
+                i = 100
+                return False
+            elif xcoord == Canvas.coords(self.paddle_2)[0] and Canvas.coords(self.ball)[1] > Canvas.coords(self.paddle_2)[1] and Canvas.coords(self.ball)[1] < Canvas.coords(self.paddle_2)[3]:
+                print 'THESE ARE POTENTIALLY THE DROIDS YOU ARE LOOKING FOR'
+                i = 100
+                return False       
 
 pp = set_up()
 pp.create_pong()

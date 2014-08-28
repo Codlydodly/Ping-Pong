@@ -12,9 +12,9 @@ class set_up(object):
         top.after(0, self.run, C, top)    
         top.mainloop()
 
-    def run(self, C, top):
+    def run(self, C):
         self.quit_button = Tkinter.Button(top, text="Quit", highlightbackground="black", command=C.quit)
-        self.replay_button = Tkinter.Button(top, text="Replay", highlightbackground="black", command=   lambda: self.reset_score(C, top))
+        self.replay_button = Tkinter.Button(top, text="Replay", highlightbackground="black", command = lambda: self.reset_score(C))
         self.net = self.paddle_and_net(C, 295, 360, 305, 0, "white")
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
         self.paddle_2 = self.paddle_and_net(C, 585, 250, 595, 345, "white")
@@ -31,7 +31,7 @@ class set_up(object):
         self.handle_keyboard(C)
         C.focus_set()
 
-    def reset_score(self, C, top):
+    def reset_score(self, C):
         C.delete(self.quit_button_window)
         C.delete(self.replay_button_window)
         C.delete(self.win)

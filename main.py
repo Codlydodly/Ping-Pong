@@ -124,11 +124,7 @@ class set_up(object):
         time.sleep(0.5)
 
     def check_collision(self, Canvas, position):
-        radius = 10
-        # if (position[0] == Canvas.coords(self.paddle_1)[2]) and (position[1] > Canvas.coords(self.paddle_1)[1]) and (position[1] < Canvas.coords(self.paddle_1)[3]):
-        #     return False
-        # elif (position[2] == Canvas.coords(self.paddle_2)[0]) and (position[1] > Canvas.coords(self.paddle_2)[1]) and (position[1] < Canvas.coords(self.paddle_2)[3]):
-        #     return False
+        radius = 10        
         if (position[0] < 0 + radius):
             self.rightscore += 1
             self.change_score(Canvas)
@@ -146,20 +142,17 @@ class set_up(object):
 
     def better_collision_check(self, Canvas):
         i = 0
-        while i < math.pi*2:
-            print i
+        while i < math.pi*2:            
             centerx = Canvas.coords(self.ball)[0] + 10
             centery = Canvas.coords(self.ball)[1] + 10          
             xcoord = centerx + 10 * math.cos(i)
             ycoord = centery + 10 * math.sin(i) 
             i += math.pi*(0.05)
             if xcoord == Canvas.coords(self.paddle_1)[2] and Canvas.coords(self.ball)[1] > Canvas.coords(self.paddle_1)[1] and Canvas.coords(self.ball)[1] < Canvas.coords(self.paddle_1)[3]:
-                print 'THESE ARE NOT THE DROIDS YOU ARE LOOKING FOR'
                 i = 100
                 return False
             elif xcoord == Canvas.coords(self.paddle_2)[0] and Canvas.coords(self.ball)[1] > Canvas.coords(self.paddle_2)[1] and Canvas.coords(self.ball)[1] < Canvas.coords(self.paddle_2)[3]:
-                print 'THESE ARE POTENTIALLY THE DROIDS YOU ARE LOOKING FOR'
-                i = 100
+                si = 100
                 return False       
 
 pp = set_up()

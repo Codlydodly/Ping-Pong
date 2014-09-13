@@ -16,14 +16,16 @@ class set_up(object):
     def run(self, C, top):
         self.quit_button = Tkinter.Button(top, text="Quit", highlightbackground="black", command=C.quit)
         self.replay_button = Tkinter.Button(top, text="Replay", highlightbackground="black", command = lambda: self.reset_score(C))
-        self.net = self.paddle_and_net(C, 295, 360, 305, 0, "white")
+        self.h = 350
+        self.w = 600
+        self.net = self.paddle_and_net(C, (self.w/2) - 5, self.h + 10, (self.w/2) + 5, 0, "white")
         self.paddle_1 = self.paddle_and_net(C, 20, 5, 10, 100, "white")
-        self.paddle_2 = self.paddle_and_net(C, 585, 250, 595, 345, "white")
+        self.paddle_2 = self.paddle_and_net(C, self.w - 15, 250, self.w - 5, 345, "white")
         self.ball = self.ball(C)
         self.leftscore = 0
         self.rightscore = 0       
-        self.score = self.score_board(C, 280, 20, 25, 0)
-        self.score2 = self.score_board(C, 320, 20, 25, 0)
+        self.score = self.score_board(C, (self.w/2) - 20, 20, 25, 0)
+        self.score2 = self.score_board(C, (self.w/2) + 20, 20, 25, 0)
         self.x = 5
         self.y = 5        
         self.pressedKeys=set()
@@ -99,9 +101,9 @@ class set_up(object):
                 self.right_win(Canvas)
 
     def right_win(self, Canvas):
-        self.lose = self.score_board(Canvas, 150, 150, 50,"YOU LOSE")
-        self.win = self.score_board(Canvas, 450, 150, 50,"YOU WIN")
-        self.quit_button_window = Canvas.create_window(350, 235, window=self.quit_button)
+        self.lose = self.score_board(Canvas, self.w/4, self.h/2, 50,"YOU LOSE")
+        self.win = self.score_board(Canvas, (self.w/4) * 3, self.h/2, 50,"YOU WIN")
+        self.quit_button_window = Canvas.create_window((self.h/2) + 50 5, 235, window=self.quit_button)
         self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)       
 
     def left_win(self, Canvas):
@@ -131,11 +133,11 @@ class set_up(object):
             self.reset_ball(Canvas)           
         elif (position[1] < 0 + radius):
             return True
-        elif (position[2] > 600):
+        elif (position[2] > self.w):
             self.leftscore += 1
             self.change_score(Canvas)
             self.reset_ball(Canvas)           
-        elif (position[3] > 350):
+        elif (position[3] > self.h):
             return True
         else:
             return

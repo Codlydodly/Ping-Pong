@@ -101,14 +101,14 @@ class set_up(object):
                 self.right_win(Canvas)
 
     def right_win(self, Canvas):
-        self.lose = self.score_board(Canvas, self.w/4, self.h/2, 50,"YOU LOSE")
-        self.win = self.score_board(Canvas, (self.w/4) * 3, self.h/2, 50,"YOU WIN")
-        self.quit_button_window = Canvas.create_window((self.h/2) + 50 5, 235, window=self.quit_button)
-        self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)       
+        self.lose = self.score_board(Canvas, self.w/4, self.h/2, 30,"YOU LOSE")
+        self.win = self.score_board(Canvas, (self.w/4) * 3, self.h/2, 30,"YOU WIN")
+        self.quit_button_window = Canvas.create_window(350, 235, window=self.quit_button)
+        self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)
 
     def left_win(self, Canvas):
-        self.lose = self.score_board(Canvas, 450, 150, 50,"YOU LOSE")
-        self.win = self.score_board(Canvas, 150, 150, 50,"YOU WIN")
+        self.lose = self.score_board(Canvas, 450, 150, 30,"YOU LOSE")
+        self.win = self.score_board(Canvas, 150, 150, 30,"YOU WIN")
         self.quit_button_window = Canvas.create_window(350, 235, window=self.quit_button)
         self.replay_button_window = Canvas.create_window(250, 235, window=self.replay_button)
 

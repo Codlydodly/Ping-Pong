@@ -154,8 +154,7 @@ class set_up(object):
                 i = 100
                 return False
             elif xcoord == Canvas.coords(self.paddle_2)[0] and Canvas.coords(self.ball)[1] > Canvas.coords(self.paddle_2)[1] and Canvas.coords(self.ball)[1] < Canvas.coords(self.paddle_2)[3]:
-                si = 100
-                return False       
-
+                i = 100
+                return False
 pp = set_up()
 pp.create_pong()
